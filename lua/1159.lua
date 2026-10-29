@@ -1,0 +1,420 @@
+---@alias Color { fg: string, bg: string, sp: string, bold: boolean, italic: boolean, undercurl: boolean, underline: boolean, underdouble: boolean, underdotted: boolean, underdashed: boolean, strikethrough: boolean }
+
+local M = {}
+
+
+---@type table<string, Color>
+local p = require('palette')
+
+local groups = {
+	italic = true,
+	bold_vert_split = { fg = p.abyss, bg = p.abyss },
+	boolean = p.rust,
+	string = p.moss,
+	background = p.abyss,
+	background_nc = p.abyss,
+	panel = p.nocturne,
+	panel_nc = p.abyss,
+	border = p.fathom,
+	comment = p.drowse,
+	link = p.aether,
+	punctuation = p.gloam,
+	error = p.rose,
+	warn = p.sunbeam,
+	hint = p.lilac,
+	info = p.seafoam,
+	git_add = p.jade,
+	git_change = p.ember,
+	git_delete = p.rose,
+	git_dirty = p.rose,
+	git_ignore = p.lilac,
+	git_merge = p.halo,
+	git_rename = p.rose,
+	git_stage = p.jade,
+	git_text = p.drowse,
+	headings = {
+		h1 = p.halo,
+		h2 = p.seafoam,
+		h3 = p.rose,
+		h4 = p.sunbeam,
+		h5 = p.aether,
+		h6 = p.ember,
+	},
+}
+
+function M.setup()
+	-- terminal colors
+	vim.g.terminal_color_0 = p.abyss
+	vim.g.terminal_color_8 = p.halo
+	vim.g.terminal_color_1 = p.rose
+	vim.g.terminal_color_9 = p.amaranth
+	vim.g.terminal_color_2 = p.moss
+	vim.g.terminal_color_10 = p.jade
+	vim.g.terminal_color_3 = p.sunbeam
+	vim.g.terminal_color_11 = p.ember
+	vim.g.terminal_color_4 = p.aether
+	vim.g.terminal_color_12 = p.morrow
+	vim.g.terminal_color_5 = p.laelia
+	vim.g.terminal_color_13 = p.lilac
+	vim.g.terminal_color_6 = p.seafoam
+	vim.g.terminal_color_14 = p.fathom
+	vim.g.terminal_color_7 = p.dusk
+	vim.g.terminal_color_15 = p.gloam
+
+	-- vim color options
+	vim.opt.termguicolors = true
+	if vim.g.colors_name then
+		vim.cmd('hi clear')
+		vim.cmd('syntax reset')
+	end
+	vim.g.colors_name = '1159'
+
+	M.defaults = {
+		['ColorColumn'] = { bg = p.nocturne },
+		['Conceal'] = { bg = p.none },
+		['CurSearch'] = { link = 'IncSearch' },
+		['Cursor'] = { fg = p.abyss, bg = p.wisp },
+		['CursorColumn'] = { bg = p.nocturne },
+		['CursorLine'] = { bg = p.nocturne },
+		['CursorLineNr'] = { fg = p.gloam, bold = true },
+		['DarkenedPanel'] = { bg = p.eclipse },
+		['DarkenedStatusline'] = { bg = p.eclipse },
+		['DiffAdd'] = { bg = groups.git_add, blend = 20 },
+
+		['DiffChange'] = { bg = p.aether, blend = 20 },
+		['DiffDelete'] = { bg = groups.git_delete, blend = 20 },
+		['DiffText'] = { bg = p.morrow, blend = 20 },
+		['diffAdded'] = { link = 'DiffAdd' },
+		['diffChanged'] = { link = 'DiffChange' },
+		['diffRemoved'] = { link = 'DiffDelete' },
+		['Added'] = { fg = p.jade },
+		['Changed'] = { fg = p.sunbeam },
+		['Removed'] = { fg = p.rose },
+		['Directory'] = { fg = p.jade, bg = p.none },
+		['EndOfBuffer'] = { bg = p.none },
+		['ErrorMsg'] = { fg = p.rose, bold = true },
+		['FloatBorder'] = { fg = groups.border, bg = p.abyss },
+		['FloatTitle'] = { fg = p.halo, bg = p.abyss, bold = true },
+		['FoldColumn'] = { fg = p.dusk },
+		['Folded'] = { fg = p.halo, bg = p.eclipse },
+		['IncSearch'] = { fg = p.abyss, bg = p.sunbeam },
+		['LineNr'] = { fg = p.dusk },
+		['MatchParen'] = { fg = p.abyss, bg = p.wisp },
+		['ModeMsg'] = { fg = p.drowse },
+		['MoreMsg'] = { fg = p.seafoam },
+		['NonText'] = { fg = p.vesper },
+		['Normal'] = { fg = p.halo, bg = p.abyss },
+		['NormalFloat'] = { fg = p.halo, bg = p.abyss },
+		['NormalNC'] = { fg = p.halo, bg = p.none },
+		['NvimInternalError'] = { fg = '#ffffff', bg = p.rose },
+		['Pmenu'] = { fg = p.halo, bg = p.nocturne },
+		['PmenuSbar'] = { bg = p.eclipse },
+		['PmenuSel'] = { fg = p.abyss, bg = p.morrow },
+		['PmenuThumb'] = { bg = p.dusk },
+		['Question'] = { fg = p.seafoam },
+		['RedrawDebugClear'] = { fg = '#ffffff', bg = p.sunbeam },
+		['RedrawDebugComposed'] = { fg = '#ffffff', bg = p.aether },
+		['RedrawDebugRecompose'] = { fg = '#ffffff', bg = p.rose },
+		['Search'] = { bg = p.dusk, fg = p.abyss },
+		['SpecialKey'] = { fg = p.vesper },
+		['SpellBad'] = { sp = p.rose, undercurl = true },
+		['SpellCap'] = { sp = p.sunbeam, undercurl = true },
+		['SpellLocal'] = { sp = p.seafoam, undercurl = true },
+		['SpellRare'] = { sp = p.lilac, undercurl = true },
+		['SignColumn'] = { fg = p.rose, bg = p.none, bold = true },
+		['Substitute'] = { fg = p.abyss, bg = p.rose },
+		['StatusLine'] = { fg = p.drowse, bg = p.eclipse },
+		['StatusLineNC'] = { fg = p.vesper, bg = p.nocturne },
+		['StatusLineTerm'] = { link = 'StatusLine' },
+		['StatusLineTermNC'] = { link = 'StatusLineNC' },
+		['TabLine'] = { fg = p.drowse, bg = p.eclipse },
+		['TabLineFill'] = { bg = p.eclipse },
+		['TabLineSel'] = { fg = p.abyss, bg = p.morrow },
+		['Title'] = { fg = p.halo, bold = true },
+		['VertSplit'] = groups.bold_vert_split,
+		['Visual'] = { bg = p.hadal, fg = p.halo },
+		['VisualNOS'] = { bg = p.hadal, fg = p.halo },
+		['WarningMsg'] = { fg = p.sunbeam },
+		['Whitespace'] = { fg = p.nocturne },
+		['WildMenu'] = { link = 'IncSearch' },
+		['WinBar'] = { fg = p.halo, bg = p.abyss },
+		['WinBarNC'] = { fg = p.drowse, bg = p.abyss },
+		['WinSeparator'] = { fg = groups.border, bg = p.abyss },
+
+		['Boolean'] = { fg = p.rust, bold = true },
+		['Character'] = { fg = p.sunbeam },
+		['Comment'] = { fg = groups.comment, italic = true },
+		['Conditional'] = { fg = p.aether },
+		['Constant'] = { fg = p.sunbeam },
+		['Debug'] = { fg = p.rose },
+		['Define'] = { fg = p.halo },
+		['Delimiter'] = { fg = p.gloam },
+		['Error'] = { fg = p.rose },
+		['Exception'] = { fg = p.aether },
+		['Float'] = { fg = p.coral },
+		['Function'] = { fg = p.laelia, bold = true },
+		['Identifier'] = { fg = p.halo },
+		['Include'] = { fg = p.aether },
+		['Keyword'] = { fg = p.laelia },
+		['Label'] = { fg = p.jade },
+		['Macro'] = { fg = p.rose },
+		['Number'] = { fg = p.coral },
+		['Operator'] = { fg = p.gloam },
+		['PreCondit'] = { fg = p.halo },
+		['PreProc'] = { fg = p.halo },
+		['Repeat'] = { fg = p.aether },
+		['Special'] = { fg = p.rose },
+		['SpecialChar'] = { fg = p.rose },
+		['SpecialComment'] = { fg = p.halo },
+		['Statement'] = { fg = p.aether },
+		['StorageClass'] = { fg = p.jade },
+		['String'] = { fg = p.moss },
+		['Structure'] = { fg = p.seafoam },
+		['Tag'] = { fg = p.seafoam },
+		['Todo'] = { fg = p.sunbeam },
+		['Type'] = { fg = p.cerulean },
+		['Typedef'] = { link = 'Type' },
+		['Underlined'] = { underline = true },
+
+		['htmlArg'] = { fg = p.sunbeam },
+		['htmlBold'] = { bold = true },
+		['htmlEndTag'] = { fg = p.gloam },
+		['htmlH1'] = { fg = groups.headings.h1, bold = true },
+		['htmlH2'] = { fg = groups.headings.h2, bold = true },
+		['htmlH3'] = { fg = groups.headings.h3, bold = true },
+		['htmlH4'] = { fg = groups.headings.h4, bold = true },
+		['htmlH5'] = { fg = groups.headings.h5, bold = true },
+		['htmlItalic'] = { italic = groups.italic },
+		['htmlLink'] = { fg = groups.link },
+		['htmlTag'] = { fg = p.gloam },
+		['htmlTagN'] = { fg = p.halo },
+		['htmlTagName'] = { fg = p.seafoam },
+
+		['markdownDelimiter'] = { fg = p.gloam },
+		['markdownH1'] = { fg = groups.headings.h1, bold = true },
+		['markdownH1Delimiter'] = { link = 'markdownH1' },
+		['markdownH2'] = { fg = groups.headings.h2, bold = true },
+		['markdownH2Delimiter'] = { link = 'markdownH2' },
+		['markdownH3'] = { fg = groups.headings.h3, bold = true },
+		['markdownH3Delimiter'] = { link = 'markdownH3' },
+		['markdownH4'] = { fg = groups.headings.h4, bold = true },
+		['markdownH4Delimiter'] = { link = 'markdownH4' },
+		['markdownH5'] = { fg = groups.headings.h5, bold = true },
+		['markdownH5Delimiter'] = { link = 'markdownH5' },
+		['markdownH6'] = { fg = groups.headings.h6, bold = true },
+		['markdownH6Delimiter'] = { link = 'markdownH6' },
+		['markdownLinkText'] = { fg = groups.link, sp = groups.link, underline = true },
+		['markdownUrl'] = { link = 'markdownLinkText' },
+
+		['mkdCode'] = { fg = p.moss, italic = groups.italic },
+		['mkdCodeDelimiter'] = { fg = p.rose },
+		['mkdCodeEnd'] = { fg = p.moss },
+		['mkdCodeStart'] = { fg = p.moss },
+		['mkdFootnotes'] = { fg = p.jade },
+		['mkdID'] = { fg = p.jade, underline = true },
+		['mkdInlineURL'] = { fg = groups.link, underline = true },
+		['mkdLink'] = { link = 'mkdInlineURL' },
+		['mkdLinkDef'] = { link = 'mkdInlineURL' },
+		['mkdListItemLine'] = { fg = p.halo },
+		['mkdRule'] = { fg = p.gloam },
+		['mkdURL'] = { link = 'mkdInlineURL' },
+
+		-- Diagnostics
+		['DiagnosticError'] = { fg = groups.error },
+		['DiagnosticHint'] = { fg = groups.hint },
+		['DiagnosticInfo'] = { fg = groups.info },
+		['DiagnosticWarn'] = { fg = groups.warn },
+		['DiagnosticDefaultError'] = { fg = groups.error },
+		['DiagnosticDefaultHint'] = { fg = groups.hint },
+		['DiagnosticDefaultInfo'] = { fg = groups.info },
+		['DiagnosticDefaultWarn'] = { fg = groups.warn },
+		['DiagnosticFloatingError'] = { fg = groups.error },
+		['DiagnosticFloatingHint'] = { fg = groups.hint },
+		['DiagnosticFloatingInfo'] = { fg = groups.info },
+		['DiagnosticFloatingWarn'] = { fg = groups.warn },
+		['DiagnosticSignError'] = { fg = groups.error },
+		['DiagnosticSignHint'] = { fg = groups.hint },
+		['DiagnosticSignInfo'] = { fg = groups.info },
+		['DiagnosticSignWarn'] = { fg = groups.warn },
+		['DiagnosticStatusLineError'] = { fg = groups.error, bg = groups.panel },
+		['DiagnosticStatusLineHint'] = { fg = groups.hint, bg = groups.panel },
+		['DiagnosticStatusLineInfo'] = { fg = groups.info, bg = groups.panel },
+		['DiagnosticStatusLineWarn'] = { fg = groups.warn, bg = groups.panel },
+		['DiagnosticUnderlineError'] = { sp = groups.error, underdotted = true },
+		['DiagnosticUnderlineHint'] = { sp = groups.hint, underdotted = true },
+		['DiagnosticUnderlineInfo'] = { sp = groups.info, underdotted = true },
+		['DiagnosticUnderlineWarn'] = { sp = groups.warn, underdotted = true },
+		['DiagnosticVirtualTextError'] = { fg = groups.error },
+		['DiagnosticVirtualTextHint'] = { fg = groups.hint },
+		['DiagnosticVirtualTextInfo'] = { fg = groups.info },
+		['DiagnosticVirtualTextWarn'] = { fg = groups.warn },
+
+		-- Healthcheck
+		['healthError'] = { fg = groups.error },
+		['healthSuccess'] = { fg = groups.info },
+		['healthWarning'] = { fg = groups.warn },
+
+		-- Treesitter
+		['@boolean'] = { link = 'Boolean' },
+		['@character'] = { link = 'Character' },
+		['@character.special'] = { link = '@character' },
+		['@class'] = { fg = p.cerulean },
+		['@comment'] = { link = 'Comment' },
+		['@conditional'] = { link = 'Conditional' },
+		['@constant'] = { link = 'Constant' },
+		['@constant.builtin'] = { fg = p.rose },
+		['@constant.macro'] = { link = '@constant' },
+		['@constructor'] = { fg = p.seafoam },
+		['@field'] = { fg = p.lilac },
+		['@function'] = { link = 'Function' },
+		['@function.builtin'] = { fg = p.aether },
+		['@function.macro'] = { link = '@function' },
+		['@include'] = { link = 'Include' },
+		['@interface'] = { fg = p.cerulean },
+		['@keyword'] = { link = 'Keyword' },
+		['@keyword.operator'] = { fg = p.gloam },
+		['@label'] = { link = 'Label' },
+		['@macro'] = { link = 'Macro' },
+		['@method'] = { fg = p.morrow },
+		['@number'] = { link = 'Number' },
+		['@operator'] = { link = 'Operator' },
+		['@parameter'] = { fg = p.halo, italic = groups.italic },
+		['@preproc'] = { link = 'PreProc' },
+		['@property'] = { fg = p.sunbeam, italic = groups.italic },
+		['@punctuation'] = { fg = groups.punctuation },
+		['@punctuation.bracket'] = { link = '@punctuation' },
+		['@punctuation.delimiter'] = { link = '@punctuation' },
+		['@punctuation.special'] = { link = '@punctuation' },
+		['@regexp'] = { link = 'String' },
+		['@repeat'] = { link = 'Repeat' },
+		['@storageclass'] = { link = 'StorageClass' },
+		['@string'] = { link = 'String' },
+		['@string.escape'] = { fg = p.aether },
+		['@string.special'] = { link = '@string' },
+		['@symbol'] = { link = 'Identifier' },
+		['@tag'] = { link = 'Tag' },
+		['@tag.attribute'] = { fg = p.sunbeam },
+		['@tag.delimiter'] = { fg = p.gloam },
+		['@text'] = { fg = p.halo },
+		['@text.strong'] = { bold = true },
+		['@text.emphasis'] = { italic = true },
+		['@text.underline'] = { underline = true },
+		['@text.strike'] = { strikethrough = true },
+		['@text.math'] = { link = 'Special' },
+		['@text.environment'] = { link = 'Macro' },
+		['@text.environment.name'] = { link = 'Type' },
+		['@text.title'] = { link = 'Title' },
+		['@text.uri'] = { fg = groups.link },
+		['@text.note'] = { link = 'SpecialComment' },
+		['@text.warning'] = { fg = groups.warn },
+		['@text.danger'] = { fg = groups.error },
+		['@todo'] = { link = 'Todo' },
+		['@type'] = { link = 'Type' },
+		['@variable'] = { fg = p.halo, italic = groups.italic },
+		['@variable.builtin'] = { fg = p.rose },
+		['@namespace'] = { link = '@include' },
+
+		-- LSP Semantic Token Groups
+		['@lsp.type.comment'] = {},
+		['@lsp.type.enum'] = { link = '@type' },
+		['@lsp.type.keyword'] = { link = '@keyword' },
+		['@lsp.type.interface'] = { link = '@interface' },
+		['@lsp.type.namespace'] = { link = '@namespace' },
+		['@lsp.type.parameter'] = { link = '@parameter' },
+		['@lsp.type.property'] = { link = '@property' },
+		['@lsp.type.variable'] = {}, -- use treesitter styles for regular variables
+		['@lsp.typemod.function.defaultLibrary'] = { link = 'Special' },
+		['@lsp.typemod.variable.defaultLibrary'] = { link = '@variable.builtin' },
+
+		-- LSP Injected Groups
+		['@lsp.typemod.operator.injected'] = { link = '@operator' },
+		['@lsp.typemod.string.injected'] = { link = '@string' },
+		['@lsp.typemod.variable.injected'] = { link = '@variable' },
+
+		-- nvim-treesitter Markdown Headings
+		['@text.title.1.markdown'] = { link = 'markdownH1' },
+		['@text.title.1.marker.markdown'] = { link = 'markdownH1Delimiter' },
+		['@text.title.2.markdown'] = { link = 'markdownH2' },
+		['@text.title.2.marker.markdown'] = { link = 'markdownH2Delimiter' },
+		['@text.title.3.markdown'] = { link = 'markdownH3' },
+		['@text.title.3.marker.markdown'] = { link = 'markdownH3Delimiter' },
+		['@text.title.4.markdown'] = { link = 'markdownH4' },
+		['@text.title.4.marker.markdown'] = { link = 'markdownH4Delimiter' },
+		['@text.title.5.markdown'] = { link = 'markdownH5' },
+		['@text.title.5.marker.markdown'] = { link = 'markdownH5Delimiter' },
+		['@text.title.6.markdown'] = { link = 'markdownH6' },
+		['@text.title.6.marker.markdown'] = { link = 'markdownH6Delimiter' },
+
+		-- vim.lsp.buf.document_highlight()
+		['LspReferenceText'] = { bg = p.nocturne },
+		['LspReferenceRead'] = { bg = p.nocturne },
+		['LspReferenceWrite'] = { bg = p.nocturne },
+
+		-- lsp-highlight-codelens
+		['LspCodeLens'] = { fg = p.drowse },
+		['LspCodeLensSeparator'] = { fg = p.dusk },
+
+		-- folke/which-key.nvim
+		['WhichKey'] = { fg = p.halo },
+		['WhichKeyGroup'] = { fg = p.jade },
+		['WhichKeySeparator'] = { fg = p.gloam },
+		['WhichKeyDesc'] = { fg = p.sunbeam },
+		['WhichKeyFloat'] = { bg = p.nocturne },
+		['WhichKeyValue'] = { fg = p.rose },
+
+		-- luka-reineke/indent-blankline.nvim
+		['IndentBlanklineChar'] = { fg = p.vesper, nocombine = true },
+		['IndentBlanklineSpaceChar'] = { fg = p.vesper, nocombine = true },
+		['IndentBlanklineSpaceCharBlankline'] = { fg = p.vesper, nocombine = true },
+
+		-- hrsh7th/nvim-cmp
+		['CmpItemAbbr'] = { fg = p.halo },
+		['CmpItemAbbrDeprecated'] = { fg = p.rose, strikethrough = true },
+		['CmpItemAbbrMatch'] = { fg = p.wisp, bold = true },
+		['CmpItemAbbrMatchFuzzy'] = { fg = p.wisp, bold = true },
+		['CmpItemKind'] = { fg = p.jade },
+		['CmpItemKindClass'] = { fg = p.cerulean },
+		['CmpItemKindFunction'] = { fg = p.laelia },
+		['CmpItemKindInterface'] = { fg = p.cerulean },
+		['CmpItemKindMethod'] = { fg = p.morrow },
+		['CmpItemKindSnippet'] = { fg = p.sunbeam },
+		['CmpItemKindVariable'] = { fg = p.halo },
+
+		-- nvim-telescope/telescope.nvim
+		['TelescopeBorder'] = { fg = groups.border, bg = groups.background },
+		['TelescopeMatching'] = { fg = p.rose },
+		['TelescopeNormal'] = { fg = p.drowse, bg = groups.background },
+		['TelescopePromptNormal'] = { fg = p.text, bg = groups.background },
+		['TelescopePromptPrefix'] = { fg = p.drowse },
+		['TelescopeSelection'] = { fg = p.halo, bg = p.hadal },
+		['TelescopeSelectionCaret'] = { fg = p.rose, bg = p.hadal },
+		['TelescopeTitle'] = { fg = p.drowse },
+
+		-- rcarriga/nvim-notify
+		['NotifyINFOBorder'] = { fg = p.seafoam },
+		['NotifyINFOTitle'] = { link = 'NotifyINFOBorder' },
+		['NotifyINFOIcon'] = { link = 'NotifyINFOBorder' },
+		['NotifyWARNBorder'] = { fg = p.sunbeam },
+		['NotifyWARNTitle'] = { link = 'NotifyWARNBorder' },
+		['NotifyWARNIcon'] = { link = 'NotifyWARNBorder' },
+		['NotifyDEBUGBorder'] = { fg = p.drowse },
+		['NotifyDEBUGTitle'] = { link = 'NotifyDEBUGBorder' },
+		['NotifyDEBUGIcon'] = { link = 'NotifyDEBUGBorder' },
+		['NotifyTRACEBorder'] = { fg = p.halo },
+		['NotifyTRACETitle'] = { link = 'NotifyTRACEBorder' },
+		['NotifyTRACEIcon'] = { link = 'NotifyTRACEBorder' },
+		['NotifyERRORBorder'] = { fg = p.rose },
+		['NotifyERRORTitle'] = { link = 'NotifyERRORBorder' },
+		['NotifyERRORIcon'] = { link = 'NotifyERRORBorder' },
+
+		-- nvim-tree/nvim-tree
+		['NvimTreeCursorLine'] = { bg = p.hadal, fg = p.halo },
+	}
+
+	-- Set highlights.
+	for group, color in pairs(M.defaults) do
+		vim.api.nvim_set_hl(0, group, color)
+	end
+end
+
+return M
